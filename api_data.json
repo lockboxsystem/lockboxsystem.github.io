@@ -131,24 +131,20 @@
     },
     "error": {
       "fields": {
-        "Es konnte kein Kunde gefunden werden.": [
+        "Error 400": [
           {
-            "group": "CustomerNotFound",
-            "field": "anchor_nr_empty",
+            "group": "Error 400",
+            "field": "anchor_nr",
             "optional": false,
             "description": "<p>Missing anchor number.</p>"
-          },
+          }
+        ],
+        "Error 404": [
           {
-            "group": "CustomerNotFound",
-            "field": "anchor_nr_incorrect",
+            "group": "Error 404",
+            "field": "anchor_nr",
             "optional": false,
-            "description": "<p>Anchor number not found.</p>"
-          },
-          {
-            "group": "CustomerNotFound",
-            "field": "anchor_nr_wrong",
-            "optional": false,
-            "description": "<p>No customer found.</p>"
+            "description": "<p>Anchor number not found or Customer not found.</p>"
           }
         ],
         "Error 4xx": [
@@ -169,17 +165,17 @@
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"error\": \"No customer found\",\n     \"code\": \"400\"\n   }\n",
+          "content": "Error-Response:\n   HTTP/1.1 404 Not found\n   {\n     \"errors\":[\n         {\n             \"title\" : \"No Customer found\",\n             \"status\": \"404\",\n         }\n     ]\n   }\n",
           "type": "json"
         },
         {
           "title": "Error-Response:",
-          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"error\": \"Missing API key\"\n   }\n",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n      \"errors\":[\n         {\n             \"title\" : \"Missing API-Key\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
           "type": "json"
         },
         {
           "title": "Error-Response:",
-          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"error\": \"Missing function\"\n   }\n",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"errors\":[\n         {\n             \"title\" : \"Missing function\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
           "type": "json"
         }
       ]
@@ -213,8 +209,8 @@
             "group": "Parameter",
             "type": "Number",
             "field": "reference",
-            "optional": false,
-            "description": "<p>Referenz Nummer aus dem eigenen System. Auch als String möglich. Wird auf dem Label abgebildet wenn vorhanden.</p>"
+            "optional": true,
+            "description": "<p>Referenz Nummer aus dem eigenen System. Auch als String möglich. Wird auf dem Label abgebildet als Barcode bei numerischen Werten oder die ersten 20-Zeichen bei Text.</p>"
           },
           {
             "group": "Parameter",
@@ -235,16 +231,16 @@
             "type": "Date",
             "field": "date_start",
             "optional": true,
-            "description": "<p>Ob welchem Datum die Sendung abgeholt werden kann. Dies erlaubt es Sendungen in der Zukunft zu erstellen um das Label im internen Prozess zu verwenden. In der Form Y-m-d.</p>"
+            "description": "<p>Ob welchem Datum die Sendung abgeholt werden kann. Dies erlaubt es Sendungen in der Zukunft zu erstellen um das Label im internen Prozess zu verwenden. In der Form Y-m-d. Ohne vorgegebenes Datum wird die Sendung als sofort verfügbar erstellt.</p>"
           }
         ]
       }
     },
     "success": {
       "fields": {
-        "Success 200": [
+        "Success 204": [
           {
-            "group": "Success 200",
+            "group": "Success 204",
             "type": "Object[]",
             "field": "Delivery",
             "optional": false,
@@ -287,7 +283,7 @@
   },
   {
     "type": "get",
-    "url": "/delivery/list/:filter",
+    "url": "/delivery/list",
     "title": "Sendungen",
     "name": "GetDeliveries",
     "group": "Delivery",
@@ -297,20 +293,7 @@
       "title": "Lesezugriff auf Sendungen",
       "description": "Zur Abfrage muss der GET-Parameter ?apikey=[DEIN_API_KEY] immer mit gesendet werden.\n"
     },
-    "description": "<p>Liefert eine Liste von Sendungen zurück die dem ServiceProvider zugewiesen sind oder erstellt wurden. Die Ausgabe ist auf maximal 100 Sendungen beschränkt.</p>",
-    "parameter": {
-      "fields": {
-        "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "string",
-            "field": "filter",
-            "optional": true,
-            "description": "<p>Filtert das Ergebniss vor. Mögliche Werte sind nodriver, deliver, failure, sent, tour, pickup</p>"
-          }
-        ]
-      }
-    },
+    "description": "<p>Liefert eine Liste der noch nicht zugestellten Sendungen zurück die dem ServiceProvider zugewiesen sind oder erstellt wurden. Die Ausgabe ist auf maximal 100 Sendungen beschränkt. Weitere Filteroptionen werden folgen.</p>",
     "success": {
       "fields": {
         "Success 200": [
@@ -490,12 +473,12 @@
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"error\": \"Missing API key\"\n   }\n",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n      \"errors\":[\n         {\n             \"title\" : \"Missing API-Key\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
           "type": "json"
         },
         {
           "title": "Error-Response:",
-          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"error\": \"Missing function\"\n   }\n",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"errors\":[\n         {\n             \"title\" : \"Missing function\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
           "type": "json"
         }
       ]
@@ -558,7 +541,7 @@
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"error\": \"Missing API key\"\n   }\n",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n      \"errors\":[\n         {\n             \"title\" : \"Missing API-Key\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
           "type": "json"
         }
       ]
@@ -584,7 +567,7 @@
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"error\": \"Missing function\"\n   }\n",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"errors\":[\n         {\n             \"title\" : \"Missing function\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
           "type": "json"
         }
       ]
