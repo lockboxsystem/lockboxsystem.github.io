@@ -194,24 +194,10 @@ define({ api: [
       "title": "Lesezugriff auf Sendungen",
       "description": "Zur Abfrage muss der GET-Parameter ?apikey=[DEIN_API_KEY] immer mit gesendet werden.\n"
     },
-    "description": "<p>Eine neue Sendung wird im System angelegt. Empfänger von Sendungen können ausschließlich Lockbox Kunden sein.Der Absender der Sendung wird über den API-Key automatisch ermittelt. Aufruf gibt Fehlermeldungen wenn die Erstellung der Sendung nicht erfolgreich war.Bei erfolgreichem Anlegen einer Sendung wird das Delivery Obejct wie oben beschrieben zurückgegeben.</p>",
+    "description": "<p>Eine neue Sendung wird im System angelegt. Das angeben einer Empfänger-Adresse ist optional. Für Lieferungen an existierende Lockbox-Kunden wird nur die Ankernummer benötigt. Der Absender der Sendung wird über den API-Key automatisch ermittelt. Aufruf gibt Fehlermeldungen wenn die Erstellung der Sendung nicht erfolgreich war.Bei erfolgreichem Anlegen einer Sendung wird das Delivery Obejct wie oben beschrieben zurückgegeben.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "String",
-            "field": "anchor_nr",
-            "optional": false,
-            "description": "<p>Ankernummer in der Form a123, A123 oder A00123</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "Number",
-            "field": "reference",
-            "optional": true,
-            "description": "<p>Referenz Nummer aus dem eigenen System. Auch als String möglich. Wird auf dem Label abgebildet als Barcode bei numerischen Werten oder die ersten 20-Zeichen bei Text.</p>"
-          },
           {
             "group": "Parameter",
             "type": "Object[]",
@@ -228,10 +214,94 @@ define({ api: [
           },
           {
             "group": "Parameter",
+            "type": "String",
+            "field": "anchor_nr",
+            "optional": true,
+            "description": "<p>Ankernummer in der Form a123, A123 oder A00123</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_first_name",
+            "optional": true,
+            "description": "<p>Vorname</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_last_name",
+            "optional": true,
+            "description": "<p>Nachname</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_company",
+            "optional": true,
+            "description": "<p>Firma</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_steet",
+            "optional": true,
+            "description": "<p>Straße</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_streetnumber",
+            "optional": true,
+            "description": "<p>Hausnummer</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_zip_code",
+            "optional": true,
+            "description": "<p>Postleitzahl</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_city",
+            "optional": true,
+            "description": "<p>Stadt</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_country",
+            "optional": true,
+            "description": "<p>Land (Möglich gerade: deu, aut)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_email",
+            "optional": true,
+            "description": "<p>Wenn eine Ankernummer gegeben aber ungebekannt ist wird ein neuer Kunde angelegt. In diesem Fall werden to_first_name, to_last_name, to_street, to_streetnumber, to_zip_code, to_city, to_country und to_email zum Plfichtfeld.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "field": "reference",
+            "optional": true,
+            "description": "<p>Referenz Nummer aus dem eigenen System. Auch als String möglich. Wird auf dem Label abgebildet als Barcode bei numerischen Werten oder die ersten 20-Zeichen bei Text.</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "Date",
             "field": "date_start",
             "optional": true,
             "description": "<p>Ob welchem Datum die Sendung abgeholt werden kann. Dies erlaubt es Sendungen in der Zukunft zu erstellen um das Label im internen Prozess zu verwenden. In der Form Y-m-d. Ohne vorgegebenes Datum wird die Sendung als sofort verfügbar erstellt.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Time",
+            "field": "delivery_time",
+            "optional": true,
+            "description": "<p>Gewünschte Zustellung zur genannten Uhrzeit. Zeitraum +2 Stunden. Gilt nur für Empfänger ohne Lockbox-Anker. In der Form H:i:s. Dieses Feld wird Pflicht wenn keine Ankernummer angegeben wurde.</p>"
           }
         ]
       }
@@ -263,6 +333,12 @@ define({ api: [
             "field": "date_start",
             "optional": false,
             "description": "<p>Datum falsch formartiert</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "field": "delivery_time",
+            "optional": false,
+            "description": "<p>Zustell-Zeitfenster Uhrzeit falsch formartiert</p>"
           },
           {
             "group": "Error 4xx",
@@ -417,6 +493,13 @@ define({ api: [
           },
           {
             "group": "Success 200",
+            "type": "Time",
+            "field": "Delivery.delivery_time",
+            "optional": false,
+            "description": "<p>Zustell-Zeitfenster</p>"
+          },
+          {
+            "group": "Success 200",
             "type": "Object[]",
             "field": "Delivery.tracking_events",
             "optional": false,
@@ -448,7 +531,7 @@ define({ api: [
       "examples": [
         {
           "title": "Success-Responce:",
-          "content": "Success-Responce:\n     HTTP/1.1 200 OK\n    {\n        Delivery: {\n            id: \"543ced73-fddc-47d9-af01-04ddfb6fadfa\"\n            anchor_nr: \"A00123\"\n            tracking_nr: \"000079792\"\n            label_url: \"http://api.lockboxsystem.com/v1/delivery/label/543ced73-fddc-47d9-af01-04ddfb6fadfa.pdf\"\n            status: \"DeliveryCreated\"\n            boxes: [\n                {\n                    box_nr: \"0000797921\"\n                    type: \"xl\"\n                },\n                {\n                    box_nr: \"0000797922\"\n                    type: \"m\"\n                }\n            ]\n            reference: \"1234215\"\n            to_company: \"\"\n            to_firt_name: \"Max\"\n            to_last_name: \"Mustermann\"\n            to_street: \"Musterstraße\"\n            to_streetnumber: \"66\"\n            to_additional_info: null\n            to_zip_code: \"10117\"\n            to_city: \"Berlin\"\n            to_country: \"DE\"\n            from_company: \"Shopname\"\n            from_firt_name: \"\"\n            from_last_name: \"\"\n            from_street: \"\"\n            from_streetnumber: \"\"\n            from_additional_info: \"\"\n            from_zip_code: \"\"\n            from_city: \"\"\n            from_country: \"DE\"\n            date_start: \"2014-10-16\"\n            tracking_events: [\n                {\n                    status: \"BoxDelivery.DeliveryCreated\"\n                    details: \"Lieferung für ServiceProvider 'Shopname' erstellt an Kunden 'Max Mustermann'.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                },\n                {\n                    status: \"BoxDelivery.DeliveryAssignedSP\"\n                    details: \"Lieferung L000079792 an Kunden 'Max Mustermann' wurde an Lieferdienst 'Versandservice' zur Auslieferung übergeben.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                }\n            ]\n            created: \"2014-10-14T11:31:31+02:00\"\n        }\n    }\n",
+          "content": "Success-Responce:\n     HTTP/1.1 200 OK\n    {\n        Delivery: {\n            id: \"543ced73-fddc-47d9-af01-04ddfb6fadfa\"\n            href: \"https://api.lockboxsystem.com/v1/delivery/item/543ced73-fddc-47d9-af01-04ddfb6fadfa\"\n            anchor_nr: \"A00123\"\n            customer_nr: \"12345678\"\n            tracking_nr: \"000079792\"\n            tracking_url: \"https://www.lockboxsystem.com/track?nr=000079792&zip=10117\"\n            label_url: \"https://api.lockboxsystem.com/v1/delivery/label/543ced73-fddc-47d9-af01-04ddfb6fadfa.pdf\"\n            status: \"DeliveryCreated\"\n            boxes: [\n                {\n                    box_nr: \"0000797921\"\n                    type: \"xl\"\n                },\n                {\n                    box_nr: \"0000797922\"\n                    type: \"m\"\n                }\n            ]\n            reference: \"1234215\"\n            to_company: \"\"\n            to_firt_name: \"Max\"\n            to_last_name: \"Mustermann\"\n            to_street: \"Musterstraße\"\n            to_streetnumber: \"66\"\n            to_additional_info: null\n            to_zip_code: \"10117\"\n            to_city: \"Berlin\"\n            to_country: \"DE\"\n            from_company: \"Shopname\"\n            from_firt_name: \"\"\n            from_last_name: \"\"\n            from_street: \"\"\n            from_streetnumber: \"\"\n            from_additional_info: \"\"\n            from_zip_code: \"\"\n            from_city: \"\"\n            from_country: \"DE\"\n            date_start: \"2014-10-16\"\n            delivery_time: \"18:00:00\"\n            tracking_events: [\n                {\n                    status: \"BoxDelivery.DeliveryCreated\"\n                    details: \"Lieferung für ServiceProvider 'Shopname' erstellt an Kunden 'Max Mustermann'.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                },\n                {\n                    status: \"BoxDelivery.DeliveryAssignedSP\"\n                    details: \"Lieferung L000079792 an Kunden 'Max Mustermann' wurde an Lieferdienst 'Versandservice' zur Auslieferung übergeben.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                }\n            ]\n            created: \"2014-10-14T11:31:31+02:00\"\n        }\n    }\n",
           "type": "json"
         }
       ]
