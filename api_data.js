@@ -54,7 +54,7 @@ define({ api: [
             "type": "Number",
             "field": "Customer.foa",
             "optional": false,
-            "description": "<p>Anrede, 0 für Frau, 1 für Herr</p>"
+            "description": "<p>Anrede, &quot;female&quot; für Frau, &quot;male&quot; für Herr oder leer</p>"
           },
           {
             "group": "Success 200",
@@ -118,13 +118,27 @@ define({ api: [
             "field": "Customer.country",
             "optional": false,
             "description": "<p>Land, ISO 3166-1 alpha-2 code</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.phone",
+            "optional": false,
+            "description": "<p>Mobilnummer</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.email",
+            "optional": false,
+            "description": "<p>E-Mail-Adresse</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Response:",
-          "content": "Success-Response:\n   HTTP/1.1 200 OK\n   {\n         Customer: {\n            customer_nr: \"12345678\"\n            anchor_nr: \"A00123\"\n            foa: \"1\"\n            first_name: \"Max\"\n            last_name: \"Musterman\"\n            company: \"\"\n            street: \"Musterstr.\"\n            streetnumber: \"66\"\n            additional_info: null\n            zip_code: \"10117\"\n            city: \"Berlin\"\n            country: \"DE\"\n        }\n    }\n",
+          "content": "Success-Response:\n   HTTP/1.1 200 OK\n   {\n         Customer: {\n            customer_nr: \"12345678\"\n            anchor_nr: \"A00123\"\n            foa: \"male\"\n            salutation: \"Dr.\"\n            first_name: \"Max\"\n            last_name: \"Mustermann\"\n            company: \"\"\n            street: \"Musterstr.\"\n            streetnumber: \"66\"\n            additional_info: null\n            zip_code: \"10117\"\n            city: \"Berlin\"\n            country: \"DE\"\n            phone: \"012345678\"\n            email: \"max@mustermann.de\"\n        }\n    }\n",
           "type": "json"
         }
       ]
@@ -194,7 +208,7 @@ define({ api: [
       "title": "Lesezugriff auf Sendungen",
       "description": "Zur Abfrage muss der GET-Parameter ?apikey=[DEIN_API_KEY] immer mit gesendet werden.\n"
     },
-    "description": "<p>Eine neue Sendung wird im System angelegt. Das angeben einer Empfänger-Adresse ist optional. Für Lieferungen an existierende Lockbox-Kunden wird nur die Ankernummer benötigt. Der Absender der Sendung wird über den API-Key automatisch ermittelt. Aufruf gibt Fehlermeldungen wenn die Erstellung der Sendung nicht erfolgreich war.Bei erfolgreichem Anlegen einer Sendung wird das Delivery Obejct wie oben beschrieben zurückgegeben.</p>",
+    "description": "<p>Eine neue Sendung wird im System angelegt. Das angeben einer Empfänger-Adresse ist optional wenn eine Ankernummer angegeben wurde. Für Lieferungen an nicht Lockbox-Kunden mit Anker muss die vollständige Adresse gesendet werden. Der Absender der Sendung wird über den API-Key automatisch ermittelt. Aufruf gibt Fehlermeldungen wenn die Erstellung der Sendung nicht erfolgreich war.Bei erfolgreichem Anlegen einer Sendung wird das Delivery Obejct wie oben beschrieben zurückgegeben.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -202,14 +216,14 @@ define({ api: [
             "group": "Parameter",
             "type": "Object[]",
             "field": "boxes",
-            "optional": false,
-            "description": "<p>Verwendeten Boxen</p>"
+            "optional": true,
+            "description": "<p>Verwendeten Boxen, Boxen können aktuell nur über das LTS zu einer Sendung später hinzugefügt werden.</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "field": "boxes.type",
-            "optional": false,
+            "optional": true,
             "description": "<p>Box Type (z.B.: m,l,xl,thermo)</p>"
           },
           {
@@ -218,6 +232,20 @@ define({ api: [
             "field": "anchor_nr",
             "optional": true,
             "description": "<p>Ankernummer in der Form a123, A123 oder A00123</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_foa",
+            "optional": true,
+            "description": "<p>Anrede, &quot;female&quot; = Frau, &quot;male&quot; = Herr oder leer</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_salutation",
+            "optional": true,
+            "description": "<p>Titel</p>"
           },
           {
             "group": "Parameter",
@@ -243,7 +271,7 @@ define({ api: [
           {
             "group": "Parameter",
             "type": "String",
-            "field": "to_steet",
+            "field": "to_street",
             "optional": true,
             "description": "<p>Straße</p>"
           },
@@ -278,9 +306,23 @@ define({ api: [
           {
             "group": "Parameter",
             "type": "String",
+            "field": "to_additional_info",
+            "optional": true,
+            "description": "<p>Addresszusatz</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "to_phone",
+            "optional": true,
+            "description": "<p>Mobil oder Telefonnummer für Rückfragen</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
             "field": "to_email",
             "optional": true,
-            "description": "<p>Wenn eine Ankernummer gegeben aber ungebekannt ist wird ein neuer Kunde angelegt. In diesem Fall werden to_first_name, to_last_name, to_street, to_streetnumber, to_zip_code, to_city, to_country und to_email zum Plfichtfeld.</p>"
+            "description": "<p>Wenn eine Ankernummer gegeben aber unbekannt ist wird ein neuer Kunde angelegt. In diesem Fall werden to_first_name, to_last_name, to_street, to_streetnumber, to_zip_code, to_city, to_country und to_email zum Plfichtfeld.</p>"
           },
           {
             "group": "Parameter",
@@ -294,7 +336,7 @@ define({ api: [
             "type": "Date",
             "field": "date_start",
             "optional": true,
-            "description": "<p>Ob welchem Datum die Sendung abgeholt werden kann. Dies erlaubt es Sendungen in der Zukunft zu erstellen um das Label im internen Prozess zu verwenden. In der Form Y-m-d. Ohne vorgegebenes Datum wird die Sendung als sofort verfügbar erstellt.</p>"
+            "description": "<p>Ab welchem Datum die Sendung abgeholt werden kann. Dies erlaubt es Sendungen in der Zukunft zu erstellen um das Label im internen Prozess zu verwenden. In der Form Y-m-d. Ohne vorgegebenes Datum wird die Sendung als sofort verfügbar erstellt.</p>"
           },
           {
             "group": "Parameter",
@@ -344,13 +386,19 @@ define({ api: [
             "group": "Error 4xx",
             "field": "boxes",
             "optional": false,
-            "description": "<p>Keine Boxen angeben, nicht als Array oder mehr als 9</p>"
+            "description": "<p>Nicht als Array oder mehr als 9</p>"
           },
           {
             "group": "Error 4xx",
             "field": "boxes.type",
             "optional": false,
             "description": "<p>Der gegebene Type ist nicht bekannt</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "field": "to_country",
+            "optional": false,
+            "description": "<p>Das Land ist unbekannt</p>"
           }
         ]
       }
@@ -431,9 +479,23 @@ define({ api: [
           {
             "group": "Success 200",
             "type": "String",
+            "field": "Delivery.href",
+            "optional": false,
+            "description": "<p>API-Url zur Sendung</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
             "field": "Delivery.anchor_nr",
             "optional": false,
             "description": "<p>Ankernummer der Sendung</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.customer_nr",
+            "optional": false,
+            "description": "<p>Kundennummer</p>"
           },
           {
             "group": "Success 200",
@@ -444,17 +506,17 @@ define({ api: [
           },
           {
             "group": "Success 200",
-            "type": "String",
-            "field": "Delivery.status",
+            "type": "Number",
+            "field": "Delivery.label_url",
             "optional": false,
-            "description": "<p>Aktueller Status der Sendung</p>"
+            "description": "<p>Url zum PDF-Label</p>"
           },
           {
             "group": "Success 200",
             "type": "String",
-            "field": "Delivery.label_url",
+            "field": "Delivery.status",
             "optional": false,
-            "description": "<p>Abfrage des Labels als PDF-Datei</p>"
+            "description": "<p>Aktueller Status der Sendung</p>"
           },
           {
             "group": "Success 200",
@@ -483,6 +545,188 @@ define({ api: [
             "field": "Delivery.reference",
             "optional": false,
             "description": "<p>Referenz Nummer. Ist auf dem Label abgedruckt. Entweder die ersten 20-Zeichen oder als Barcode bei 12-stelligen numerischen Wert.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_company",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_foa",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_salutation",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_first_name",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_last_name",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_street",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_streetnumber",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_additional_info",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_zip_code",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_city",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_country",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_phone",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.to_email",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_company",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_foa",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_salutation",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_first_name",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_last_name",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_street",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_streetnumber",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_additional_info",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_zip_code",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_city",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_country",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_phone",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Delivery.from_email",
+            "optional": false,
+            "description": ""
           },
           {
             "group": "Success 200",
@@ -531,7 +775,7 @@ define({ api: [
       "examples": [
         {
           "title": "Success-Responce:",
-          "content": "Success-Responce:\n     HTTP/1.1 200 OK\n    {\n        Delivery: {\n            id: \"543ced73-fddc-47d9-af01-04ddfb6fadfa\"\n            href: \"https://api.lockboxsystem.com/v1/delivery/item/543ced73-fddc-47d9-af01-04ddfb6fadfa\"\n            anchor_nr: \"A00123\"\n            customer_nr: \"12345678\"\n            tracking_nr: \"000079792\"\n            tracking_url: \"https://www.lockboxsystem.com/track?nr=000079792&zip=10117\"\n            label_url: \"https://api.lockboxsystem.com/v1/delivery/label/543ced73-fddc-47d9-af01-04ddfb6fadfa.pdf\"\n            status: \"DeliveryCreated\"\n            boxes: [\n                {\n                    box_nr: \"0000797921\"\n                    type: \"xl\"\n                },\n                {\n                    box_nr: \"0000797922\"\n                    type: \"m\"\n                }\n            ]\n            reference: \"1234215\"\n            to_company: \"\"\n            to_firt_name: \"Max\"\n            to_last_name: \"Mustermann\"\n            to_street: \"Musterstraße\"\n            to_streetnumber: \"66\"\n            to_additional_info: null\n            to_zip_code: \"10117\"\n            to_city: \"Berlin\"\n            to_country: \"DE\"\n            from_company: \"Shopname\"\n            from_firt_name: \"\"\n            from_last_name: \"\"\n            from_street: \"\"\n            from_streetnumber: \"\"\n            from_additional_info: \"\"\n            from_zip_code: \"\"\n            from_city: \"\"\n            from_country: \"DE\"\n            date_start: \"2014-10-16\"\n            delivery_time: \"18:00:00\"\n            tracking_events: [\n                {\n                    status: \"BoxDelivery.DeliveryCreated\"\n                    details: \"Lieferung für ServiceProvider 'Shopname' erstellt an Kunden 'Max Mustermann'.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                },\n                {\n                    status: \"BoxDelivery.DeliveryAssignedSP\"\n                    details: \"Lieferung L000079792 an Kunden 'Max Mustermann' wurde an Lieferdienst 'Versandservice' zur Auslieferung übergeben.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                }\n            ]\n            created: \"2014-10-14T11:31:31+02:00\"\n        }\n    }\n",
+          "content": "Success-Responce:\n     HTTP/1.1 200 OK\n    {\n        Delivery: {\n            id: \"543ced73-fddc-47d9-af01-04ddfb6fadfa\"\n            href: \"https://api.lockboxsystem.com/v1/delivery/item/543ced73-fddc-47d9-af01-04ddfb6fadfa\"\n            anchor_nr: \"A00123\"\n            customer_nr: \"12345678\"\n            tracking_nr: \"000079792\"\n            tracking_url: \"https://www.lockboxsystem.com/track?nr=000079792&zip=10117\"\n            label_url: \"https://api.lockboxsystem.com/v1/delivery/label/543ced73-fddc-47d9-af01-04ddfb6fadfa.pdf\"\n            status: \"DeliveryCreated\"\n            boxes: [\n                {\n                    box_nr: \"0000797921\"\n                    type: \"xl\"\n                },\n                {\n                    box_nr: \"0000797922\"\n                    type: \"m\"\n                }\n            ]\n            reference: \"1234215\"\n            to_company: \"\"\n            to_foa: \"male\"\n            to_salutation: \"Dr.\"\n            to_firt_name: \"Max\"\n            to_last_name: \"Mustermann\"\n            to_street: \"Musterstraße\"\n            to_streetnumber: \"66\"\n            to_additional_info: null\n            to_zip_code: \"10117\"\n            to_city: \"Berlin\"\n            to_country: \"DE\"\n            from_company: \"Shopname\"\n            from_foa: \"\"\n            from_salutation: \"\"\n            from_firt_name: \"\"\n            from_last_name: \"\"\n            from_street: \"\"\n            from_streetnumber: \"\"\n            from_additional_info: \"\"\n            from_zip_code: \"\"\n            from_city: \"\"\n            from_country: \"DE\"\n            date_start: \"2014-10-16\"\n            delivery_time: \"18:00:00\"\n            tracking_events: [\n                {\n                    status: \"BoxDelivery.DeliveryCreated\"\n                    details: \"Lieferung für ServiceProvider 'Shopname' erstellt an Kunden 'Max Mustermann'.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                },\n                {\n                    status: \"BoxDelivery.DeliveryAssignedSP\"\n                    details: \"Lieferung L000079792 an Kunden 'Max Mustermann' wurde an Lieferdienst 'Versandservice' zur Auslieferung übergeben.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                }\n            ]\n            created: \"2014-10-14T11:31:31+02:00\"\n        }\n    }\n",
           "type": "json"
         }
       ]
