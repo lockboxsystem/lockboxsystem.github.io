@@ -406,6 +406,305 @@ define({ api: [
     "filename": "src/apiv1.js"
   },
   {
+    "type": "post",
+    "url": "/box/item",
+    "title": "Box anlegen",
+    "name": "AddDeliveryBox",
+    "group": "DeliveryBoxes",
+    "version": "1.0.1",
+    "permission": {
+      "name": "apikey",
+      "title": "Lesezugriff auf Sendungen",
+      "description": "Zur Abfrage muss der GET-Parameter ?apikey=[DEIN_API_KEY] immer mit gesendet werden.\n"
+    },
+    "description": "<p>Fügt eine Box einer Sendung hinzu.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "field": "delivery_id",
+            "optional": false,
+            "description": "<p>Sendungsnummer</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "field": "type",
+            "optional": false,
+            "description": "<p>Box Type</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "field": "Box",
+            "optional": false,
+            "description": "<p>Wie in /box/item/:box_nr beschrieben</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "field": "apikey",
+            "optional": false,
+            "description": "<p>Missing or wrong API Key.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "field": "function",
+            "optional": false,
+            "description": "<p>The requested function does not exists.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n      \"errors\":[\n         {\n             \"title\" : \"Missing API-Key\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"errors\":[\n         {\n             \"title\" : \"Missing function\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "src/apiv1.js"
+  },
+  {
+    "type": "delete",
+    "url": "/box/item/:box_nr",
+    "title": "Box entfernen",
+    "name": "DeleteDeliveryBoxNr",
+    "group": "DeliveryBoxes",
+    "version": "1.0.1",
+    "permission": {
+      "name": "apikey",
+      "title": "Lesezugriff auf Sendungen",
+      "description": "Zur Abfrage muss der GET-Parameter ?apikey=[DEIN_API_KEY] immer mit gesendet werden.\n"
+    },
+    "description": "<p>Entfernt eine bereits hinzugefügte Box. Aktuell ist ist nur möglich die letzte Box zu entfernen da diese für alle Labels durchnummeriert sind.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "field": "box_nr",
+            "optional": false,
+            "description": "<p>Box Nummer</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "Success-Response:\n   HTTP/1.1 204 No Content\n",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "field": "box_nr",
+            "optional": false,
+            "description": "<p>Keine box_nr angegeben.</p>"
+          },
+          {
+            "group": "Error 400",
+            "field": "BoxNotFound",
+            "optional": false,
+            "description": "<p>Die box_nr konnte nicht gefunden werden.</p>"
+          },
+          {
+            "group": "Error 400",
+            "field": "DeliveryPickedup",
+            "optional": false,
+            "description": "<p>Die Sendung wurde bereits eingeladen und kann nicht mehr verändert werden.</p>"
+          },
+          {
+            "group": "Error 400",
+            "field": "BoxLast",
+            "optional": false,
+            "description": "<p>Es wurde nicht die letzte Box entfernt.</p>"
+          }
+        ],
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "field": "apikey",
+            "optional": false,
+            "description": "<p>Missing or wrong API Key.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "field": "function",
+            "optional": false,
+            "description": "<p>The requested function does not exists.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n      \"errors\":[\n         {\n             \"title\" : \"Missing API-Key\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"errors\":[\n         {\n             \"title\" : \"Missing function\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "src/apiv1.js"
+  },
+  {
+    "type": "get",
+    "url": "/box/item/:box_nr",
+    "title": "Box abfragen",
+    "name": "GetDeliveryBoxNr",
+    "group": "DeliveryBoxes",
+    "version": "1.0.1",
+    "permission": {
+      "name": "apikey",
+      "title": "Lesezugriff auf Sendungen",
+      "description": "Zur Abfrage muss der GET-Parameter ?apikey=[DEIN_API_KEY] immer mit gesendet werden.\n"
+    },
+    "description": "<p>Gibt Informationen zu einer Box einer Sendung aus</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "string",
+            "field": "box_nr",
+            "optional": false,
+            "description": "<p>Box Nummer</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "field": "Box",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Box.box_nr",
+            "optional": false,
+            "description": "<p>Box Nummer</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Box.delivery_id",
+            "optional": false,
+            "description": "<p>ID der Sendung</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Box.type",
+            "optional": false,
+            "description": "<p>Box Type</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Box.description",
+            "optional": false,
+            "description": "<p>Beschreibung der Box</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "field": "Box.is_in_a_box",
+            "optional": false,
+            "description": "<p>Diese Box befindet sich in einer anderen Box. Dies bedeutet das kein Label existiert.</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Box.label_url",
+            "optional": false,
+            "description": "<p>Label der einzelnen Box</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "Success-Response:\n   HTTP/1.1 200 OK\n   {\n         Box: {\n            delivery_id: \"54bfcbe0-c930-4811-9615-03f2fb6fadfa\"\n            box_nr: \"0000382932\"\n            type: \"s\"\n            description: \"Small\"\n            is_in_a_box: false\n            label_url: \"https://api.lockboxsystem.com/v1/box/label/0000382932.pdf\"\n        }\n    }\n",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "field": "box_nr",
+            "optional": false,
+            "description": "<p>Keine Box Nummer angegeben.</p>"
+          }
+        ],
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "field": "apikey",
+            "optional": false,
+            "description": "<p>Missing or wrong API Key.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "field": "function",
+            "optional": false,
+            "description": "<p>The requested function does not exists.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n      \"errors\":[\n         {\n             \"title\" : \"Missing API-Key\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"errors\":[\n         {\n             \"title\" : \"Missing function\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "src/apiv1.js"
+  },
+  {
     "type": "get",
     "url": "/delivery/list",
     "title": "Sendungen",
