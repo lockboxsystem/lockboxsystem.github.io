@@ -1,8 +1,386 @@
 [
   {
+    "type": "post",
+    "url": "/customer/item",
+    "title": "Kunden anlegen",
+    "name": "AddCustomer",
+    "group": "Customer",
+    "version": "1.0.2",
+    "permission": {
+      "name": "apikey",
+      "title": "Lesezugriff auf Sendungen",
+      "description": "Zur Abfrage muss der GET-Parameter ?apikey=[DEIN_API_KEY] immer mit gesendet werden.\n"
+    },
+    "description": "<p>Erstellt einen neuen Endkunden im System.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "email",
+            "optional": false,
+            "description": "<p>Email Adresse des Kunden.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "password",
+            "optional": true,
+            "description": "<p>Passwort ist optional. Wenn leer wird automatisch eines generiert beim Anker anlegen.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "company",
+            "optional": true,
+            "description": "<p>Firma</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "foa",
+            "optional": true,
+            "description": "<p>Anrede, &quot;female&quot; = Frau, &quot;male&quot; = Herr oder leer</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "salutation",
+            "optional": true,
+            "description": "<p>Titel</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "first_name",
+            "optional": true,
+            "description": "<p>Vorname</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "last_name",
+            "optional": false,
+            "description": "<p>Nachname</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "street",
+            "optional": true,
+            "description": "<p>Straße</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "streetnumber",
+            "optional": true,
+            "description": "<p>Hausnummer</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "zip_code",
+            "optional": true,
+            "description": "<p>Postleitzahl</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "city",
+            "optional": true,
+            "description": "<p>Stadt</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "birthday",
+            "optional": true,
+            "description": "<p>Geburstag in der Form Y-m-d</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "country",
+            "optional": true,
+            "description": "<p>Land (Möglich gerade: deu, aut)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "additional_info",
+            "optional": true,
+            "description": "<p>Addresszusatz</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "phone",
+            "optional": true,
+            "description": "<p>Mobil oder Telefonnummer für Rückfragen</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "phone_code",
+            "optional": true,
+            "description": "<p>Telefonnummer Vorwahl</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "anchor_delivery_date",
+            "optional": true,
+            "description": "<p>Ankerliefertermin als Tag im Format Y-m-d</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "anchor_delivery_time",
+            "optional": true,
+            "description": "<p>Ankerliefertermin als Uhrzeit im Format H:i:s</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 204": [
+          {
+            "group": "Success 204",
+            "type": "Object[]",
+            "field": "Customer",
+            "optional": false,
+            "description": "<p>wie in /customer/item/:customer_nr beschrieben</p>"
+          }
+        ]
+      }
+    },
+    "error": {
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "field": "anchor_delivery_date",
+            "optional": false,
+            "description": "<p>Datum falsch formartiert</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "field": "anchor_delivery_time",
+            "optional": false,
+            "description": "<p>Uhrzeit falsch formartiert</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "field": "country",
+            "optional": false,
+            "description": "<p>Das Land ist unbekannt</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "field": "last_name",
+            "optional": false,
+            "description": "<p>Kein Nachname angegeben</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/apiv1.js"
+  },
+  {
+    "type": "get",
+    "url": "/customer/item/:customer_nr",
+    "title": "Kunden abfragen",
+    "name": "GetCustomer",
+    "group": "Customer",
+    "version": "1.0.2",
+    "permission": {
+      "name": "apikey",
+      "title": "Lesezugriff auf Sendungen",
+      "description": "Zur Abfrage muss der GET-Parameter ?apikey=[DEIN_API_KEY] immer mit gesendet werden.\n"
+    },
+    "description": "<p>Gibt Informationen zu einem bei Lockbox registrierten Kunden aus.</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "field": "customer_nr",
+            "optional": false,
+            "description": "<p>Kundennummer des Kunden.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "field": "Customer",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.customer_nr",
+            "optional": false,
+            "description": "<p>Kundennummer</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.anchor_nr",
+            "optional": false,
+            "description": "<p>Ankernummer</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "field": "Customer.foa",
+            "optional": false,
+            "description": "<p>Anrede, &quot;female&quot; für Frau, &quot;male&quot; für Herr oder leer</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.salutation",
+            "optional": false,
+            "description": "<p>Titel</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.first_name",
+            "optional": false,
+            "description": "<p>Vorname</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.last_name",
+            "optional": false,
+            "description": "<p>Nachname</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.company",
+            "optional": false,
+            "description": "<p>Firma</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.street",
+            "optional": false,
+            "description": "<p>Straße</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.streetnumber",
+            "optional": false,
+            "description": "<p>Hausnummer</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.additional_info",
+            "optional": false,
+            "description": "<p>Adresszusatz, Etage, Eingang</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "field": "Customer.zip_code",
+            "optional": false,
+            "description": "<p>Postleitzahl</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.city",
+            "optional": false,
+            "description": "<p>Stadt</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.country",
+            "optional": false,
+            "description": "<p>Land, ISO 3166-1 alpha-2 code</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.phone",
+            "optional": false,
+            "description": "<p>Mobilnummer</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.email",
+            "optional": false,
+            "description": "<p>E-Mail-Adresse</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "Success-Response:\n   HTTP/1.1 200 OK\n   {\n         Customer: {\n            customer_nr: \"12345678\"\n            anchor_nr: \"A00123\"\n            foa: \"male\"\n            salutation: \"Dr.\"\n            first_name: \"Max\"\n            last_name: \"Mustermann\"\n            company: \"\"\n            street: \"Musterstr.\"\n            streetnumber: \"66\"\n            additional_info: null\n            zip_code: \"10117\"\n            city: \"Berlin\"\n            country: \"DE\"\n            phone: \"012345678\"\n            email: \"max@mustermann.de\"\n        }\n    }\n",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "Error-Response:\n   HTTP/1.1 404 Not found\n   {\n     \"errors\":[\n         {\n             \"title\" : \"No Customer found\",\n             \"status\": \"404\",\n         }\n     ]\n   }\n",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n      \"errors\":[\n         {\n             \"title\" : \"Missing API-Key\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
+          "type": "json"
+        },
+        {
+          "title": "Error-Response:",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"errors\":[\n         {\n             \"title\" : \"Missing function\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
+          "type": "json"
+        }
+      ],
+      "fields": {
+        "Error 4xx": [
+          {
+            "group": "Error 4xx",
+            "field": "apikey",
+            "optional": false,
+            "description": "<p>Missing or wrong API Key.</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "field": "function",
+            "optional": false,
+            "description": "<p>The requested function does not exists.</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/apiv1.js"
+  },
+  {
     "type": "get",
     "url": "/customer/anchor/:anchor_nr",
-    "title": "Kunde abfragen",
+    "title": "Ankernummer abfragen",
     "name": "GetCustomerByAnchor",
     "group": "Customer",
     "version": "1.0.0",
@@ -55,6 +433,13 @@
             "field": "Customer.foa",
             "optional": false,
             "description": "<p>Anrede, &quot;female&quot; für Frau, &quot;male&quot; für Herr oder leer</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.salutation",
+            "optional": false,
+            "description": "<p>Titel</p>"
           },
           {
             "group": "Success 200",
@@ -1158,16 +1543,16 @@
         "Error 4xx": [
           {
             "group": "Error 4xx",
-            "field": "apikey",
+            "field": "function",
             "optional": false,
-            "description": "<p>Missing or wrong API Key.</p>"
+            "description": "<p>The requested function does not exists.</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n      \"errors\":[\n         {\n             \"title\" : \"Missing API-Key\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"errors\":[\n         {\n             \"title\" : \"Missing function\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
           "type": "json"
         }
       ]
@@ -1184,16 +1569,16 @@
         "Error 4xx": [
           {
             "group": "Error 4xx",
-            "field": "function",
+            "field": "apikey",
             "optional": false,
-            "description": "<p>The requested function does not exists.</p>"
+            "description": "<p>Missing or wrong API Key.</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Error-Response:",
-          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n     \"errors\":[\n         {\n             \"title\" : \"Missing function\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
+          "content": "Error-Response:\n   HTTP/1.1 400 Bad request\n   {\n      \"errors\":[\n         {\n             \"title\" : \"Missing API-Key\",\n             \"status\": \"400\",\n         }\n     ]\n   }\n",
           "type": "json"
         }
       ]
