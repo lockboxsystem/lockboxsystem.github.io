@@ -1123,7 +1123,7 @@ define({ api: [
     "title": "Sendung abfragen",
     "name": "GetDeliveryById",
     "group": "Delivery",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "permission": {
       "name": "apikey",
       "title": "Lesezugriff auf Sendungen",
@@ -1453,13 +1453,20 @@ define({ api: [
             "field": "Delivery.tracking_events.created",
             "optional": false,
             "description": "<p>Datum</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Object[]",
+            "field": "ChildDelivery1-n",
+            "optional": false,
+            "description": "<p>Beim Überschreiten der Maximalanzahl an Boxen pro Sendung werden 1-n Children-Deliveries erzeugt</p>"
           }
         ]
       },
       "examples": [
         {
           "title": "Success-Responce:",
-          "content": "Success-Responce:\n     HTTP/1.1 200 OK\n    {\n        Delivery: {\n            id: \"543ced73-fddc-47d9-af01-04ddfb6fadfa\"\n            href: \"https://api.lockboxsystem.com/v1/delivery/item/543ced73-fddc-47d9-af01-04ddfb6fadfa\"\n            anchor_nr: \"A00123\"\n            customer_nr: \"12345678\"\n            tracking_nr: \"000079792\"\n            tracking_url: \"https://www.lockboxsystem.com/track?nr=000079792&zip=10117\"\n            label_url: \"https://api.lockboxsystem.com/v1/delivery/label/543ced73-fddc-47d9-af01-04ddfb6fadfa.pdf\"\n            status: \"DeliveryCreated\"\n            boxes: [\n                {\n                    box_nr: \"0000797921\"\n                    type: \"xl\"\n                },\n                {\n                    box_nr: \"0000797922\"\n                    type: \"m\"\n                }\n            ]\n            reference: \"1234215\"\n            to_company: \"\"\n            to_foa: \"male\"\n            to_salutation: \"Dr.\"\n            to_firt_name: \"Max\"\n            to_last_name: \"Mustermann\"\n            to_street: \"Musterstraße\"\n            to_streetnumber: \"66\"\n            to_additional_info: null\n            to_zip_code: \"10117\"\n            to_city: \"Berlin\"\n            to_country: \"DE\"\n            from_company: \"Shopname\"\n            from_foa: \"\"\n            from_salutation: \"\"\n            from_firt_name: \"\"\n            from_last_name: \"\"\n            from_street: \"\"\n            from_streetnumber: \"\"\n            from_additional_info: \"\"\n            from_zip_code: \"\"\n            from_city: \"\"\n            from_country: \"DE\"\n            date_start: \"2014-10-16\"\n            delivery_time: \"18:00:00\"\n            tracking_events: [\n                {\n                    status: \"BoxDelivery.DeliveryCreated\"\n                    details: \"Lieferung für ServiceProvider 'Shopname' erstellt an Kunden 'Max Mustermann'.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                },\n                {\n                    status: \"BoxDelivery.DeliveryAssignedSP\"\n                    details: \"Lieferung L000079792 an Kunden 'Max Mustermann' wurde an Lieferdienst 'Versandservice' zur Auslieferung übergeben.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                }\n            ]\n            created: \"2014-10-14T11:31:31+02:00\"\n        }\n    }\n",
+          "content": "Success-Responce:\n     HTTP/1.1 200 OK\n    {\n        Delivery: {\n            id: \"543ced73-fddc-47d9-af01-04ddfb6fadfa\"\n            href: \"https://api.lockboxsystem.com/v1/delivery/item/543ced73-fddc-47d9-af01-04ddfb6fadfa\"\n            anchor_nr: \"A00123\"\n            customer_nr: \"12345678\"\n            tracking_nr: \"000079792\"\n            tracking_url: \"https://www.lockboxsystem.com/track?nr=000079792&zip=10117\"\n            label_url: \"https://api.lockboxsystem.com/v1/delivery/label/543ced73-fddc-47d9-af01-04ddfb6fadfa.pdf\"\n            status: \"DeliveryCreated\"\n            boxes: [\n                {\n                    box_nr: \"0000797921\"\n                    type: \"xl\"\n                },\n                {\n                    box_nr: \"0000797922\"\n                    type: \"m\"\n                }\n            ]\n            reference: \"1234215\"\n            to_company: \"\"\n            to_foa: \"male\"\n            to_salutation: \"Dr.\"\n            to_firt_name: \"Max\"\n            to_last_name: \"Mustermann\"\n            to_street: \"Musterstraße\"\n            to_streetnumber: \"66\"\n            to_additional_info: null\n            to_zip_code: \"10117\"\n            to_city: \"Berlin\"\n            to_country: \"DE\"\n            from_company: \"Shopname\"\n            from_foa: \"\"\n            from_salutation: \"\"\n            from_firt_name: \"\"\n            from_last_name: \"\"\n            from_street: \"\"\n            from_streetnumber: \"\"\n            from_additional_info: \"\"\n            from_zip_code: \"\"\n            from_city: \"\"\n            from_country: \"DE\"\n            date_start: \"2014-10-16\"\n            delivery_time: \"18:00:00\"\n            tracking_events: [\n                {\n                    status: \"BoxDelivery.DeliveryCreated\"\n                    details: \"Lieferung für ServiceProvider 'Shopname' erstellt an Kunden 'Max Mustermann'.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                },\n                {\n                    status: \"BoxDelivery.DeliveryAssignedSP\"\n                    details: \"Lieferung L000079792 an Kunden 'Max Mustermann' wurde an Lieferdienst 'Versandservice' zur Auslieferung übergeben.\"\n                    created: \"2014-10-14T11:31:31+02:00\"\n                }\n            ]\n            created: \"2014-10-14T11:31:31+02:00\"\n        }\n        ChildDelivery1: {\n\t\t\tentspricht Delivery-Object\n        }\n        ChildDeliveryn: {\n\t\t\tentspricht Delivery-Object\n        }\n    }\n",
           "type": "json"
         }
       ]
