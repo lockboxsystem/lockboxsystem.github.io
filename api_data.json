@@ -5,13 +5,13 @@
     "title": "Kunden anlegen",
     "name": "AddCustomer",
     "group": "Customer",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "permission": {
       "name": "apikey",
       "title": "Lesezugriff auf Sendungen",
       "description": "Zur Abfrage muss der GET-Parameter ?apikey=[DEIN_API_KEY] immer mit gesendet werden.\n"
     },
-    "description": "<p>Erstellt einen neuen Endkunden im System.</p>",
+    "description": "<p>Erstellt einen neuen Endkunden im System. Wenn die E-Mail-Adresse bereits im System registriert ist, wird der Kunde ohne Veränderung zurückgegeben.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -132,14 +132,21 @@
             "type": "String",
             "field": "anchor_delivery_date",
             "optional": true,
-            "description": "<p>Ankerliefertermin als Tag im Format Y-m-d</p>"
+            "description": "<p>Anker-Liefertermin als Tag im Format Y-m-d</p>"
           },
           {
             "group": "Parameter",
             "type": "String",
             "field": "anchor_delivery_time",
             "optional": true,
-            "description": "<p>Ankerliefertermin als Uhrzeit im Format H:i:s</p>"
+            "description": "<p>Anker-Liefertermin als Uhrzeit im Format H:i:s</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "anchor_delivery_time_max",
+            "optional": true,
+            "description": "<p>Maximaler Anker-Liefertermin als Uhrzeit im Format H:i:s</p>"
           }
         ]
       }
@@ -183,6 +190,12 @@
             "field": "last_name",
             "optional": false,
             "description": "<p>Kein Nachname angegeben</p>"
+          },
+          {
+            "group": "Error 4xx",
+            "field": "email",
+            "optional": false,
+            "description": "<p>Keine validate E-Mail-Adresse</p>"
           }
         ]
       }
@@ -587,7 +600,7 @@
     "title": "Sendung anlegen",
     "name": "AddDeliveryById",
     "group": "Delivery",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "permission": {
       "name": "apikey",
       "title": "Lesezugriff auf Sendungen",
@@ -718,6 +731,20 @@
           },
           {
             "group": "Parameter",
+            "type": "Number",
+            "field": "delivery_repacked",
+            "optional": true,
+            "description": "<p>Wurde die Sendung umgepackt, 0 oder 1.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "external_tracking_nr",
+            "optional": true,
+            "description": "<p>Wenn eine externe Sendungsverfolgungsnummer existiert.</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "Date",
             "field": "date_start",
             "optional": true,
@@ -728,7 +755,35 @@
             "type": "Time",
             "field": "delivery_time",
             "optional": true,
-            "description": "<p>Gewünschte Zustellung zur genannten Uhrzeit. Zeitraum +2 Stunden. Gilt nur für Empfänger ohne Lockbox-Anker. In der Form H:i:s. Dieses Feld wird Pflicht wenn keine Ankernummer angegeben wurde.</p>"
+            "description": "<p>Gewünschte Zustellung zur genannten Uhrzeit. Zeitraum +2 Stunden. In der Form H:i:s. Dieses Feld wird Pflicht wenn keine Ankernummer angegeben wurde.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Time",
+            "field": "delivery_time_max",
+            "optional": true,
+            "description": "<p>Maximale Uhrzeit der Zustellung.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object[]",
+            "field": "products",
+            "optional": true,
+            "description": "<p>Produkte die in der Sendung enthalten sind</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "procuts.article_nr",
+            "optional": true,
+            "description": "<p>Externe Artikelnummer</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "procuts.article_title",
+            "optional": true,
+            "description": "<p>Externer Artikelname</p>"
           }
         ]
       }

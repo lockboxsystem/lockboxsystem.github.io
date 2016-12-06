@@ -1,6 +1,6 @@
 define({
   "name": "Lockbox RESTful API",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Anbindung an das Lockbox LTS.",
   "title": "Lockbox RESTful API V1",
   "url": "https://api.lockboxsystem.com/v1",
@@ -12,6 +12,6 @@ define({
   },
   "generator": {
     "version": "0.7.2",
-    "time": "2016-04-12T11:39:56.931Z"
+    "time": "2016-12-06T12:00:06.022Z"
   }
 });
