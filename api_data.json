@@ -5,7 +5,7 @@
     "title": "Kunden anlegen",
     "name": "AddCustomer",
     "group": "Customer",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "permission": {
       "name": "apikey",
       "title": "Lesezugriff auf Sendungen",
@@ -129,6 +129,20 @@
           },
           {
             "group": "Parameter",
+            "type": "Number",
+            "field": "floor",
+            "optional": true,
+            "description": "<p>Etage</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Boolean",
+            "field": "is_lift_available",
+            "optional": true,
+            "description": "<p>Fahrstuhl vorhanden</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "String",
             "field": "anchor_delivery_date",
             "optional": true,
@@ -208,7 +222,7 @@
     "title": "Kunden abfragen",
     "name": "GetCustomer",
     "group": "Customer",
-    "version": "1.0.2",
+    "version": "1.0.5",
     "permission": {
       "name": "apikey",
       "title": "Lesezugriff auf Sendungen",
@@ -332,9 +346,37 @@
           {
             "group": "Success 200",
             "type": "String",
+            "field": "Customer.birthday",
+            "optional": false,
+            "description": "<p>Geburstag</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.phone_code",
+            "optional": false,
+            "description": "<p>Mobilnummer (nur Vorwahl)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
             "field": "Customer.phone",
             "optional": false,
             "description": "<p>Mobilnummer</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "field": "Customer.floor",
+            "optional": false,
+            "description": "<p>Etage</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "field": "Customer.is_lift_available",
+            "optional": false,
+            "description": "<p>Fahrstuhl vorhanden</p>"
           },
           {
             "group": "Success 200",
@@ -342,6 +384,13 @@
             "field": "Customer.email",
             "optional": false,
             "description": "<p>E-Mail-Adresse</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "field": "Customer.created",
+            "optional": false,
+            "description": "<p>Datum erstellt</p>"
           }
         ]
       },
@@ -396,7 +445,7 @@
     "title": "Ankernummer abfragen",
     "name": "GetCustomerByAnchor",
     "group": "Customer",
-    "version": "1.0.0",
+    "version": "1.0.5",
     "permission": {
       "name": "apikey",
       "title": "Lesezugriff auf Sendungen",
@@ -520,9 +569,37 @@
           {
             "group": "Success 200",
             "type": "String",
+            "field": "Customer.birthday",
+            "optional": false,
+            "description": "<p>Geburstag</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
+            "field": "Customer.phone_code",
+            "optional": false,
+            "description": "<p>Mobilnummer (nur Vorwahl)</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "String",
             "field": "Customer.phone",
             "optional": false,
             "description": "<p>Mobilnummer</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "field": "Customer.floor",
+            "optional": false,
+            "description": "<p>Etage</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Boolean",
+            "field": "Customer.is_lift_available",
+            "optional": false,
+            "description": "<p>Fahrstuhl vorhanden</p>"
           },
           {
             "group": "Success 200",
@@ -530,6 +607,13 @@
             "field": "Customer.email",
             "optional": false,
             "description": "<p>E-Mail-Adresse</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "DateTime",
+            "field": "Customer.created",
+            "optional": false,
+            "description": "<p>Datum erstellt</p>"
           }
         ]
       },
@@ -600,7 +684,7 @@
     "title": "Sendung anlegen",
     "name": "AddDeliveryById",
     "group": "Delivery",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "permission": {
       "name": "apikey",
       "title": "Lesezugriff auf Sendungen",
@@ -610,20 +694,6 @@
     "parameter": {
       "fields": {
         "Parameter": [
-          {
-            "group": "Parameter",
-            "type": "Object[]",
-            "field": "boxes",
-            "optional": true,
-            "description": "<p>Verwendeten Boxen, Boxen können aktuell nur über das LTS zu einer Sendung später hinzugefügt werden.</p>"
-          },
-          {
-            "group": "Parameter",
-            "type": "String",
-            "field": "boxes.type",
-            "optional": true,
-            "description": "<p>Box Type (z.B.: m,l,xl,thermo)</p>"
-          },
           {
             "group": "Parameter",
             "type": "String",
@@ -724,6 +794,20 @@
           },
           {
             "group": "Parameter",
+            "type": "Boolean",
+            "field": "to_lift_available",
+            "optional": true,
+            "description": "<p>Fahrstuhl vorhanden</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "field": "to_floor",
+            "optional": true,
+            "description": "<p>Etage</p>"
+          },
+          {
+            "group": "Parameter",
             "type": "Number",
             "field": "reference",
             "optional": true,
@@ -763,6 +847,27 @@
             "field": "delivery_time_max",
             "optional": true,
             "description": "<p>Maximale Uhrzeit der Zustellung.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "field": "payment_price_to_pay",
+            "optional": true,
+            "description": "<p>Nachnahmekosten in Euro als Float</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Object[]",
+            "field": "boxes",
+            "optional": true,
+            "description": "<p>Verwendeten Boxen, Boxen können aktuell nur über das LTS zu einer Sendung später hinzugefügt werden.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "field": "boxes.type",
+            "optional": true,
+            "description": "<p>Box Type (z.B.: none, bottle, s, m ,l, xl,thermo)</p>"
           },
           {
             "group": "Parameter",
@@ -1178,7 +1283,7 @@
     "title": "Sendung abfragen",
     "name": "GetDeliveryById",
     "group": "Delivery",
-    "version": "1.0.2",
+    "version": "1.0.5",
     "permission": {
       "name": "apikey",
       "title": "Lesezugriff auf Sendungen",
@@ -1378,6 +1483,20 @@
           },
           {
             "group": "Success 200",
+            "type": "Boolean",
+            "field": "Delivery.to_lift_available",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "field": "Delivery.to_floor",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
             "type": "String",
             "field": "Delivery.from_company",
             "optional": false,
@@ -1469,6 +1588,20 @@
           },
           {
             "group": "Success 200",
+            "type": "Boolean",
+            "field": "Delivery.from_lift_available",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "field": "Delivery.from_floor",
+            "optional": false,
+            "description": ""
+          },
+          {
+            "group": "Success 200",
             "type": "Date",
             "field": "Delivery.date_start",
             "optional": false,
@@ -1480,6 +1613,13 @@
             "field": "Delivery.delivery_time",
             "optional": false,
             "description": "<p>Zustell-Zeitfenster</p>"
+          },
+          {
+            "group": "Success 200",
+            "type": "Number",
+            "field": "Delivery.payment_price_to_pay",
+            "optional": false,
+            "description": "<p>Nachnahmekosten</p>"
           },
           {
             "group": "Success 200",
